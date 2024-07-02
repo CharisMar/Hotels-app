@@ -22,7 +22,7 @@ seasonal = sorted(df['seasonal'].unique().tolist())
 
 # Generate the dropdown menus
 city_selected = st.multiselect('In which City?', options=city)
-integration_Service_selected = st.multiselect('With what integration type?', options=integration_service)
+integration_service_selected = st.multiselect('With what integration type?', options=integration_service)
 seasonal_selected = st.multiselect('Is it Seasonal?', options=seasonal)
 rooms_selected = st.number_input('Rooms', min_value=1, value=100)
 
