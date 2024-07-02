@@ -16,9 +16,9 @@ revenue_per_city_data = pd.read_excel('revenue_per_city.xlsx')
 st.title('Hotels Prediction Tool')
 
 # Generate lists for dropdown options
-City = sorted(df['city'].unique().tolist())
-Integration_Service = sorted(df['integration_service'].unique().tolist())
-Seasonal = sorted(df['seasonal'].unique().tolist())
+city = sorted(df['city'].unique().tolist())
+integration_Service = sorted(df['integration_service'].unique().tolist())
+seasonal = sorted(df['seasonal'].unique().tolist())
 
 # Generate lists for dropdown options
 rooms = st.number_input('Rooms', min_value=1, value=100)
