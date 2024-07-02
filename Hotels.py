@@ -17,12 +17,12 @@ st.title('Hotels Prediction Tool')
 
 # Generate lists for dropdown options
 city = sorted(df['city'].unique().tolist())
-integration_Service = sorted(df['integration_service'].unique().tolist())
+integration_service = sorted(df['integration_service'].unique().tolist())
 seasonal = sorted(df['seasonal'].unique().tolist())
 
 # Generate the dropdown menus
 city_selected = st.multiselect('In which City?', options=city)
-integration_Service_selected = st.multiselect('With what integration type?', options=integration_Service)
+integration_Service_selected = st.multiselect('With what integration type?', options=integration_service)
 seasonal_selected = st.multiselect('Is it Seasonal?', options=seasonal)
 rooms_selected = st.number_input('Rooms', min_value=1, value=100)
 
