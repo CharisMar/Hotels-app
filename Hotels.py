@@ -30,6 +30,10 @@ if st.button('Predict Revenue'):
         'seasonal': [seasonal_selected]
     })
     
+    # Display the DataFrame for debugging
+    st.write("Input Data for Prediction:")
+    st.write(new_property_details)
+    
     # Ensure all columns expected by the model are present
     for col in ['city', 'integration_service', 'rooms', 'seasonal']:
         if col not in new_property_details.columns:
@@ -44,13 +48,17 @@ if st.button('Predict Revenue'):
     })
 
     # Make predictions
-    predicted_revenue = pipeline_revenue.predict(new_property_details)
-    predicted_trips = pipeline_trips.predict(new_property_details)
+    try:
+        predicted_revenue = pipeline_revenue.predict(new_property_details)
+        predicted_trips = pipeline_trips.predict(new_property_details)
 
-    # Calculate the total predicted revenue
-    total_predicted_revenue = predicted_trips[0] * predicted_revenue[0]
+        # Calculate the total predicted revenue
+        total_predicted_revenue = predicted_trips[0] * predicted_revenue[0]
 
-    # Display the results
-    st.write(f'Predicted Revenue per Trip: ${predicted_revenue[0]:.2f}')
-    st.write(f'Predicted Number of Trips: {predicted_trips[0]:.0f}')
-    st.write(f'Total Predicted Revenue for the First Year: ${total_predicted_revenue:.2f}')
+        # Display the results
+        st.write(f'Predicted Revenue per Trip: ${predicted_revenue[0]:.2f}')
+        st.write(f'Predicted Number of Trips: {predicted_trips[0]:.0f}')
+        st.write(f'Total Predicted Revenue for the First Year: ${total_predicted_revenue:.2f}')
+    except ValueError as e:
+        st.error(f"Error during prediction: {e}")
+
