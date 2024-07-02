@@ -25,3 +25,24 @@ city_selected = st.multiselect('In which City?', options=city)
 integration_Service_selected = st.multiselect('With what integration type?', options=integration_Service)
 seasonal_selected = st.multiselect('Is it Seasonal?', options=seasonal)
 rooms_selected = st.number_input('Rooms', min_value=1, value=100)
+
+if st.button('Predict Revenue'):
+    # Create a new DataFrame based on user input
+    new_property_details = pd.DataFrame({
+        'city': [city_selected],
+        'integration_service': [integration_service_selected], 
+        'rooms': [rooms_selected],  
+        'seasonal': [seasonal_selected]
+    })
+
+    # Make predictions
+    predicted_revenue = pipeline_revenue.predict(new_property_details)
+    predicted_trips = pipeline_trips.predict(new_property_details)
+
+    # Calculate the total predicted revenue
+    total_predicted_revenue = predicted_trips[0] * predicted_revenue[0]
+
+    # Display the results
+    st.write(f'Predicted Revenue per Trip: ${predicted_revenue[0]:.2f}')
+    st.write(f'Predicted Number of Trips: {predicted_trips[0]:.0f}')
+    st.write(f'Total Predicted Revenue for the First Year: ${total_predicted_revenue:.2f}')
