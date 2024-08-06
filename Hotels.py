@@ -43,11 +43,11 @@ else:
 if st.button('Predict Revenue'):
     if new_city not in df['city'].values:
         # Use the average revenue per city for new cities
-        avg_revenue_row = revenue_per_city_data[revenue_per_city_data['city'].str.lower() == new_city.lower()]
+        avg_revenue_row = revenue_per_city_data[revenue_per_city_data['city_name'].str.lower() == new_city.lower()]
         if avg_revenue_row.empty:
             st.error('New city revenue data not available.')
         else:
-            avg_revenue_per_trip = avg_revenue_row['average_revenue'].values[0]
+            avg_revenue_per_trip = avg_revenue_row['revenue_per_city'].values[0]
             st.write(f'Using average revenue per trip for the new city: ${avg_revenue_per_trip:.2f}')
             
             # Create a new DataFrame with average revenue per trip for predictions
