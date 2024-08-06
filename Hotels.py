@@ -48,7 +48,7 @@ if st.button('Predict Revenue'):
             st.error('New city revenue data not available.')
         else:
             avg_revenue_per_trip = avg_revenue_row['revenue_per_city'].values[0]
-            st.write(f'Using average revenue per trip for the new city: ${avg_revenue_per_trip:.2f}')
+            st.write(f'Using average revenue per trip for the new city: €{avg_revenue_per_trip:.2f}')
             
             # Create a new DataFrame with average revenue per trip for predictions
             new_property_details = pd.DataFrame({
@@ -95,9 +95,9 @@ if st.button('Predict Revenue'):
                 total_predicted_revenue = adjusted_trips * avg_revenue_per_trip
 
                 # Display the results
-                st.write(f'Predicted Revenue per Trip: ${avg_revenue_per_trip:.2f}')
+                st.write(f'Predicted Revenue per Trip: €{avg_revenue_per_trip:.2f}')
                 st.write(f'Predicted Number of Trips (Adjusted): {adjusted_trips:.0f}')
-                st.write(f'Total Predicted Revenue for the First Year: ${total_predicted_revenue:.2f}')
+                st.write(f'Total Predicted Revenue for the First Year: €{total_predicted_revenue:.2f}')
             except ValueError as e:
                 st.error(f"Error during prediction: {e}")
     else:
@@ -147,8 +147,9 @@ if st.button('Predict Revenue'):
             total_predicted_revenue = adjusted_trips * predicted_revenue[0]
 
             # Display the results
-            st.write(f'Predicted Revenue per Trip: ${predicted_revenue[0]:.2f}')
+            st.write(f'Predicted Revenue per Trip: €{predicted_revenue[0]:.2f}')
             st.write(f'Predicted Number of Trips (Adjusted): {adjusted_trips:.0f}')
-            st.write(f'Total Predicted Revenue for the First Year: ${total_predicted_revenue:.2f}')
+            st.write(f'Total Predicted Revenue for the First Year: €{total_predicted_revenue:.2f}')
         except ValueError as e:
             st.error(f"Error during prediction: {e}")
+
