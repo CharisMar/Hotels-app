@@ -13,6 +13,15 @@ df = pd.read_csv('hotelapp.csv')
 city = sorted(df['city'].unique().tolist())
 integration_service = sorted(df['integration_service'].unique().tolist())
 seasonal = sorted(df['seasonal'].unique().tolist())
+price_comparison = [
+    "Av room price is less than Welcome main route price : -50%",
+    "Av room price is equal to Welcome main route price : -20%",
+    "Av room price is 1.5 times more expensive than Welcome main route price : no change",
+    "Av room price is 2 times more expensive than Welcome main route price : +15%",
+    "Av room price is 3 times more expensive than Welcome main route price : +35%",
+    "Av room price is 4 times more expensive than Welcome main route price : +50%",
+    "Av room price is 5 times more expensive than Welcome main route price : +75%"
+]
 
 # Streamlit UI components
 st.title('Hotels Prediction Tool')
@@ -20,6 +29,7 @@ city_selected = st.selectbox('Select City:', options=city)
 integration_service_selected = st.selectbox('Select Integration Service:', options=integration_service)
 seasonal_selected = st.selectbox('Is it Seasonal?', options=seasonal)
 rooms_selected = st.number_input('Number of Rooms:', min_value=1, value=100)
+price_comparison_selected = st.selectbox('Average Room Price Comparison:', options=price_comparison)
 
 if st.button('Predict Revenue'):
     # Create a new DataFrame based on user input
@@ -52,13 +62,26 @@ if st.button('Predict Revenue'):
         predicted_revenue = pipeline_revenue.predict(new_property_details)
         predicted_trips = pipeline_trips.predict(new_property_details)
 
-        # Calculate the total predicted revenue
-        total_predicted_revenue = predicted_trips[0] * predicted_revenue[0]
+        # Adjust the predicted trips based on the price comparison
+        adjustment_factors = {
+            "Av room price is less than Welcome main route price : -50%": 0.5,
+            "Av room price is equal to Welcome main route price : -20%": 0.8,
+            "Av room price is 1.5 times more expensive than Welcome main route price : no change": 1.0,
+            "Av room price is 2 times more expensive than Welcome main route price : +15%": 1.15,
+            "Av room price is 3 times more expensive than Welcome main route price : +35%": 1.35,
+            "Av room price is 4 times more expensive than Welcome main route price : +50%": 1.5,
+            "Av room price is 5 times more expensive than Welcome main route price : +75%": 1.75
+        }
+        
+        adjustment_factor = adjustment_factors[price_comparison_selected]
+        adjusted_trips = predicted_trips[0] * adjustment_factor
+
+        # Calculate the total predicted revenue with adjusted trips
+        total_predicted_revenue = adjusted_trips * predicted_revenue[0]
 
         # Display the results
         st.write(f'Predicted Revenue per Trip: ${predicted_revenue[0]:.2f}')
-        st.write(f'Predicted Number of Trips: {predicted_trips[0]:.0f}')
+        st.write(f'Predicted Number of Trips (Adjusted): {adjusted_trips:.0f}')
         st.write(f'Total Predicted Revenue for the First Year: ${total_predicted_revenue:.2f}')
     except ValueError as e:
         st.error(f"Error during prediction: {e}")
-
