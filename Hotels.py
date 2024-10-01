@@ -39,7 +39,7 @@ if city_selected == 'Other':
     new_city = st.text_input('Enter the new city name:')
     
     # Allow the user to input an estimate for trips in the new city
-    user_estimated_trips = st.number_input('Enter an estimate for the number of trips for this new city:', min_value=1)
+    user_estimated_trips = st.number_input('number of booked trips by this property in a year:', min_value=1)
 else:
     new_city = city_selected
 
