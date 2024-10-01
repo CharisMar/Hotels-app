@@ -37,6 +37,9 @@ price_comparison_selected = st.selectbox('Average Room Price Comparison:', optio
 
 if city_selected == 'Other':
     new_city = st.text_input('Enter the new city name:')
+    
+    # Allow the user to input an estimate for trips in the new city
+    user_estimated_trips = st.number_input('Enter an estimate for the number of trips for this new city:', min_value=1)
 else:
     new_city = city_selected
 
@@ -50,56 +53,16 @@ if st.button('Predict Revenue'):
             avg_revenue_per_trip = avg_revenue_row['revenue_per_city'].values[0]
             st.write(f'Using average revenue per trip for the new city: €{avg_revenue_per_trip:.2f}')
             
-            # Create a new DataFrame with average revenue per trip for predictions
-            new_property_details = pd.DataFrame({
-                'city': [new_city],
-                'integration_service': [integration_service_selected], 
-                'rooms': [rooms_selected],  
-                'seasonal': [seasonal_selected]
-            })
+            # Use the number of trips input by the user
+            adjusted_trips = user_estimated_trips
 
-            st.write("Input Data for Prediction:")
-            st.write(new_property_details)
+            # Calculate the total predicted revenue with the user-specified trips
+            total_predicted_revenue = adjusted_trips * avg_revenue_per_trip
 
-            # Ensure all columns expected by the model are present
-            for col in ['city', 'integration_service', 'rooms', 'seasonal']:
-                if col not in new_property_details.columns:
-                    new_property_details[col] = ''
-
-            # Convert data types to match the training data
-            new_property_details = new_property_details.astype({
-                'city': 'object',
-                'integration_service': 'object',
-                'rooms': 'float64',
-                'seasonal': 'object'
-            })
-
-            try:
-                predicted_trips = pipeline_trips.predict(new_property_details)
-
-                # Adjust the predicted trips based on the price comparison
-                adjustment_factors = {
-                    "Av room price is less than Welcome main route price : -50%": 0.5,
-                    "Av room price is equal to Welcome main route price : -20%": 0.8,
-                    "Av room price is 1.5 times more expensive than Welcome main route price : no change": 1.0,
-                    "Av room price is 2 times more expensive than Welcome main route price : +15%": 1.15,
-                    "Av room price is 3 times more expensive than Welcome main route price : +35%": 1.35,
-                    "Av room price is 4 times more expensive than Welcome main route price : +50%": 1.5,
-                    "Av room price is 5 times more expensive than Welcome main route price : +75%": 1.75
-                }
-                
-                adjustment_factor = adjustment_factors[price_comparison_selected]
-                adjusted_trips = predicted_trips[0] * adjustment_factor
-
-                # Calculate the total predicted revenue with adjusted trips
-                total_predicted_revenue = adjusted_trips * avg_revenue_per_trip
-
-                # Display the results
-                st.write(f'Predicted Revenue per Trip: €{avg_revenue_per_trip:.2f}')
-                st.write(f'Predicted Number of Trips (Adjusted): {adjusted_trips:.0f}')
-                st.write(f'Total Predicted Revenue for the First Year: €{total_predicted_revenue:.2f}')
-            except ValueError as e:
-                st.error(f"Error during prediction: {e}")
+            # Display the results
+            st.write(f'Predicted Revenue per Trip: €{avg_revenue_per_trip:.2f}')
+            st.write(f'Predicted Number of Trips: {adjusted_trips}')
+            st.write(f'Total Predicted Revenue for the First Year: €{total_predicted_revenue:.2f}')
     else:
         # Use the standard prediction for existing cities
         new_property_details = pd.DataFrame({
@@ -152,4 +115,3 @@ if st.button('Predict Revenue'):
             st.write(f'Total Predicted Revenue for the First Year: €{total_predicted_revenue:.2f}')
         except ValueError as e:
             st.error(f"Error during prediction: {e}")
-
